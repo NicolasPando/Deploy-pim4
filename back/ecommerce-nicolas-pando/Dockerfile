@@ -1,6 +1,6 @@
 FROM node:18
 WORKDIR /app
-COPY package*.json ./back/ecommerce-nicolas-pando
+COPY package*.json ./
 RUN npm install
 COPY . .
 EXPOSE 3000
