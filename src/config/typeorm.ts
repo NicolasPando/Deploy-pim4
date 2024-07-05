@@ -13,15 +13,15 @@ const config = {
     database:process.env.DB_NAME,
     // host:process.env.DB_HOST,
     // host:process.env.DB_NAME,
-    host:'postgresdb',
+    host: process.env.DB_HOST,
     port:process.env.DB_PORT,
     username: process.env.DB_USERNAME,
     password:process.env.DB_PASSWORD,
     // Configuracion extra
     entities:['dist/**/*.entity{.ts,.js}'],
     logging:false,
-    synchronize:false,
-    dropSchema:false,
+    synchronize:true,
+    dropSchema:true,
 };
 
 export const typeOrmConfig = registerAs('typeorm', () => config);
