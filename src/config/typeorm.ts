@@ -20,8 +20,8 @@ const config = {
     // Configuracion extra
     entities:['dist/**/*.entity{.ts,.js}'],
     logging:false,
-    synchronize:true,
-    dropSchema:true,
+    synchronize:false,
+    dropSchema:false,
 };
 
 export const typeOrmConfig = registerAs('typeorm', () => config);
