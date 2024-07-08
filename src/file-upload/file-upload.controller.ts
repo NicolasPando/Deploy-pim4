@@ -2,7 +2,7 @@ import { Controller, FileTypeValidator, MaxFileSizeValidator, Param, ParseFilePi
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploadService } from './file-upload.service';
 import { AuthGuard } from 'src/Auth/AuthGuard';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags, ApiParam } from '@nestjs/swagger';
 
 @ApiTags('files')
 @Controller('files')
@@ -11,10 +11,10 @@ export class FileUploadController {
     
     @Post('uploadImage/:id')
     @ApiOperation({summary:'Carga de imagen Cloudinary a un producto'})
-    @ApiQuery({
+    @ApiParam({
         name:"id",
-        type:"numer",
-        description:'Id del producto al cual se le asignara la nueva imagn',
+        type:"string",
+        description:'Id del producto al cual se le asignara la nueva imagen',
         required:true
     })
     @UseGuards(AuthGuard)
