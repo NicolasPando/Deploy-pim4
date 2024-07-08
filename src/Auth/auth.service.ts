@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, ConflictException, Injectable } from "@nestjs/common";
 import { AuthRepository } from "./auth.repository";
 import { users } from "src/Entities/user.entity";
 import * as bcrypt from 'bcrypt'
@@ -34,7 +34,7 @@ export class AuthService {
     const { email, password } = user;
 
     const foundUser = await this.authRepository.findByEmail(email)
-    if(foundUser) throw new BadRequestException('El email ya esta registrado');
+    if(foundUser) throw new ConflictException('El email ya esta registrado');
     const hashedPassword = await bcrypt.hash(password, 10);
 
     return await this.usersRepository.addUser({

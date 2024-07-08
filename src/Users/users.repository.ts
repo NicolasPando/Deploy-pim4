@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { users } from "src/Entities/user.entity";
 import { Repository } from "typeorm";
@@ -24,6 +24,10 @@ export class UsersRepository {
       take:limit,
       skip: skip,
     });
+
+    if(users.length === 0){
+      throw new NotFoundException('No se encontró ningún usuario')
+    }
     return users.map(({password, ... userNoPassword })=> userNoPassword);
   }
 

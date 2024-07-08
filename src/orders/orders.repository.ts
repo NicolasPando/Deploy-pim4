@@ -34,12 +34,15 @@ export class OrdersRepository {
         const newOrder = await this.orderRepository.save(order2);
 
         const productsArray = await Promise.all(
-            products.map(async (element) => {
+            products.map(async (element: Partial<product>) => {
                 const product = await this.productRepository.findOneBy({
                     id: element.id
                 });
                 if(!product){
                     throw new NotFoundException(`Producto con id ${element.id} no encontrado`)
+                }
+                if(product.stock === 0){
+                    throw new NotFoundException(`El producto ${element.id} no tiene stock en estos momentos`)
                 }
                 total += Number(product.price);
 

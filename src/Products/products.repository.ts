@@ -21,8 +21,18 @@ export class ProductsRepository{
     private orderRepository: Repository<order>
   ){}
 
-  async getProducts(page: number, limit:number) {
+  async getProducts(page?: number, limit?:number) {
+    
+    if(!page){
+      page = 1
+    }
+    if(!limit){
+      limit = 5
+    }
+    const skip = (page - 1) * limit
     let products = await this.productsRepository.find({
+      take:limit,
+      skip: skip,
       relations:{
         category:true,
       },  
@@ -44,7 +54,7 @@ export class ProductsRepository{
   async addProduct(){
     const categories = await this.categoriesRepository.find();
     for (const element of data) {
-      const category = categories.find(cat => cat.name === element.category);
+      const category = categories.find(cat => cat.name.toLowerCase() === element.category.toLowerCase());
 
       
       const product2 = new product();
@@ -83,30 +93,33 @@ export class ProductsRepository{
 
 
   
-  async addProduct2(products){
+  async addProduct2(newPrduct: ProductDto) {
     const categories = await this.categoriesRepository.find();
-    products.map(async(element)=>{
-      const category = categories.find(
-        (category) => category.name === element.category
-      );
-      const product2 = new product();
-        product2.name = element.name;
-        product2.description= element.description;
-        product2.price= element.price;
-        product2.imgUrl= element.imgUrl;
-        product2.stock= element.stock;
-        product2.category= category;
+    const category = categories.find((cat) => cat.name.toLowerCase() === newPrduct.category.toLowerCase());
+  
+    if (!category) {
+      throw new Error('Categoría no encontrada');
+    }
 
-        await this.productsRepository
-        .createQueryBuilder()
-        .insert()
-        .into(product)
-        .values(product2)
-        .orIgnore()
-        .execute()
-    });
-    return 'Producos agregados'
+    const product2 = new product();
+    product2.name = newPrduct.name;
+    product2.description = newPrduct.description;
+    product2.price = newPrduct.price;
+    product2.imgUrl = newPrduct.imgUrl;
+    product2.stock = newPrduct.stock;
+    product2.category = category;
+  
+    await this.productsRepository
+      .createQueryBuilder()
+      .insert()
+      .into('product')
+      .values(product2)
+      .orIgnore()
+      .execute();
+  
+    return 'Producto agregado';
   }
+  
 
   async updateProduct(id:string, product:product){
     await this.productsRepository.update(id,product);

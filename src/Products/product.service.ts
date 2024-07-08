@@ -21,7 +21,7 @@ export class ProductService {
 
     
 
-    async addProduct2(products:Partial<product[]>) {
+    async addProduct2(products:ProductDto) {
         return this.productsRepository.addProduct2(products)
     }
 

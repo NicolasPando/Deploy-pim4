@@ -3,7 +3,6 @@ import { FileUpLoadRepository } from './file-upload.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { product } from 'src/Entities/product.entity';
 import { Repository } from 'typeorm';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class FileUploadService {

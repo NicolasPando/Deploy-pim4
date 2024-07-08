@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { category } from "src/Entities/category.entity";
 import { Repository } from "typeorm";
 import * as data from "./data.json"
+import { createCategoryDto } from "./create-category.dto";
 
 @Injectable()
 export class CategoriesRepository {
@@ -12,11 +13,15 @@ export class CategoriesRepository {
     ) {}
     
     async getCategories (){
-    return await this.categoriesRepository.find()
+    const categories = await this.categoriesRepository.find()
+    if(categories.length === 0){
+        throw new NotFoundException('No se encontraron categorías')
+    }
+    return categories
     }
 
     async addCategories() {
-  for (const element of data) {
+    for (const element of data) {
     await this.categoriesRepository
       .createQueryBuilder()
       .insert()
@@ -26,21 +31,23 @@ export class CategoriesRepository {
       .execute();
   }
   return "Categorías agregadas";
-}
+  }
 
-    
-    //pruebas
-
-    async updateCategory(id:string, newName:string){
-        const category = await this.categoriesRepository.findOneBy({ id })
-
-        if(category){
-            category.name=newName
-            await this.categoriesRepository.save(category)      
-            return 'Categoría actualizada'      
-        } else {
-            throw new NotFoundException(`No se encontró una categoría con el id ${id}`)
+async createCategory (newCategory:createCategoryDto){
+    const categoriaduplicada = await this.categoriesRepository.findOne({where: { name: newCategory.name }})
+    if(!categoriaduplicada){
+        await this.categoriesRepository
+        .createQueryBuilder()
+        .insert()
+        .into(category)
+        .values({name: newCategory.name})
+        .orIgnore()
+        .execute()
+        return `Categoría ${newCategory.name} agregada con exito`
+        }else{
+            throw new ConflictException("La categoría ingresada ya existe en la base de datos")
         }
     }
+    
 }
 
