@@ -117,7 +117,7 @@ export class ProductsRepository{
       .orIgnore()
       .execute();
   
-    return 'Producto agregado';
+    return {message:"Producto agregado", product:product2};
   }
   
 
