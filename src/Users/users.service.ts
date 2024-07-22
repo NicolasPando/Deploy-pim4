@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { UsersRepository } from "./users.repository";
 import { UpdateUserDto } from "./create-user.dto";
 
+const a = 1
 
 @Injectable()
 export class UserService {
